@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 public class OcgExample {
     public static void main(String[] args) {
         String inputFile = "src/main/resources/doc.pdf";
+        String outputFolder = "pdf_outputs_layer"; // Папка для сохранения изображений
         try (PDDocument document = PDDocument.load(new File(inputFile))) {
             PDOptionalContentProperties ocProps = document.getDocumentCatalog().getOCProperties();
             if (ocProps != null) {
@@ -26,7 +27,12 @@ public class OcgExample {
                     // Рендеринг страницы с учетом установленной видимости слоёв
                     for (int i = 0; i < document.getNumberOfPages(); ++i) {
                         BufferedImage image = renderer.renderImageWithDPI(i, 300);
-                        String outputFileName = layerName + "_page_" + (i + 1) + ".png";
+                        // Создание папки, если она еще не существует
+                        File dir = new File(outputFolder);
+                        if (!dir.exists()) {
+                            dir.mkdir();
+                        }
+                        String outputFileName = outputFolder + "/" + layerName + "_page_" + (i + 1) + ".png";
                         // Сохранение рендеренной страницы в файл
                         ImageIO.write(image, "PNG", new File(outputFileName));
                     }
